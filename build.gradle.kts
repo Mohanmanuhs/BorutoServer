@@ -22,9 +22,6 @@ repositories {
 
 
 dependencies {
-
-
-
     implementation(kotlin("stdlib"))
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.22")
     testImplementation("io.ktor:ktor-server-test-host:2.3.7")
