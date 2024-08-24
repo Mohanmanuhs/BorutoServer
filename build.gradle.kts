@@ -59,5 +59,9 @@ tasks.test {
 }
 kotlin {
     jvmToolchain(8)
-
+}
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
