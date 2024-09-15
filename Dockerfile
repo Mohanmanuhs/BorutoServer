@@ -1,14 +1,25 @@
+# Stage 1: Build
 FROM openjdk:21 AS build
-COPY --chown=gradle:gradle . /home/gradle/src
+
+# Copy source code to the container
+COPY . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle buildFatJar --no-daemon
+
+# Give execute permissions to the gradlew script
 RUN chmod +x ./gradlew
+
+# Use the Gradle wrapper to build the fat JAR
 RUN ./gradlew --no-daemon buildFatJar
 
+# Stage 2: Run
+FROM openjdk:21
 
-From openjdk:21
+# Expose the port the application will run on
 EXPOSE 8081
+
+# Create an app directory and copy the fat JAR from the build stage
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/DemoServer-all.jar
-ENTRYPOINT ["java","-jar","/app/DemoServer-all.jar"]
 
+# Command to run the JAR file
+ENTRYPOINT ["java", "-jar", "/app/DemoServer-all.jar"]
