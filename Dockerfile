@@ -1,12 +1,14 @@
-FROM gradle:latest AS BUILD_STAGE
-WORKDIR /tmp
-COPY gradle gradle
-COPY build.gradle.kts gradle.properties settings.gradle.kts gradlew ./
-COPY src src
+FROM gradle:9-jdk21 AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle buildFatJar --no-daemon
+RUN chmod +x ./gradlew
 RUN ./gradlew --no-daemon buildFatJar
 
-FROM openjdk:21-jdk-slim
-EXPOSE 8081:8081
+
+From openjdk:21
+EXPOSE 8081
 RUN mkdir /app
-COPY --from=BUILD_STAGE /tmp/build/libs/*-all.jar /app/DemoServer.jar
-ENTRYPOINT ["java","-Xlog:gc+init","-XX:+PrintCommandLineFlags","-jar","/app/DemoServer.jar"]
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/DemoServer-all.jar
+ENTRYPOINT ["java","-jar","/app/DemoServer-all.jar"]
+

@@ -37,14 +37,13 @@ class MongoDatasourceImpl(private val db: MongoDatabase) : Datasource {
             .limit(1)
             .toList()
             .isNotEmpty()
-
-
         return ApiResponse(
             success = true,
             message = "ok",
             prevPage = if (page == 1) null else page - 1,
             nextPage = if (hasMore) page + 1 else null,
             heroes = list,
+            lastUpdated = System.currentTimeMillis()
         )
     }
 
