@@ -1,6 +1,9 @@
 # Stage 1: Build
 FROM openjdk:21 AS build
 
+# Install xargs and other basic utilities
+RUN apt-get update && apt-get install -y findutils
+
 # Copy source code to the container
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
